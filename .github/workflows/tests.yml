@@ -1,0 +1,49 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+  schedule:
+    - cron: '0 0 11 * *'
+
+jobs:
+  tests:
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ 8.0, 8.1 ]
+        composer-flag: [ prefer-lowest, prefer-stable ]
+
+    name: php v${{ matrix.php }} - ${{ matrix.composer-flag }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ctype, dom, json, mbstring, openssl, xml, zip, zlib
+          coverage: pcov
+
+      - name: Install dependencies
+        run: composer update --${{ matrix.composer-flag }} --no-interaction --no-progress
+
+      - name: Execute tests
+        run: composer test:coverage
+
+      - name: Upload coverage report
+        uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: false
+

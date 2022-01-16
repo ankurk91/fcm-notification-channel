@@ -1,0 +1,56 @@
+{
+  "name": "ankurk91/fcm-notification-channel",
+  "description": "Firebase push notification channel for Laravel",
+  "keywords": [
+    "laravel",
+    "notification",
+    "firebase",
+    "fcm"
+  ],
+  "homepage": "https://github.com/ankurk91/fcm-notification-channel",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "ankurk91",
+      "homepage": "https://ankurk91.github.io",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.0",
+    "illuminate/notifications": "^8.13",
+    "illuminate/support": "^8.13",
+    "kreait/laravel-firebase": "^4.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^6.24",
+    "roave/better-reflection": "^5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "NotificationChannels\\FCM\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NotificationChannels\\FCM\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "sort-packages": true,
+    "preferred-install": "dist"
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit --testdox --color=always",
+    "test:coverage": "vendor/bin/phpunit --testdox --color=always --coverage-clover=coverage.xml"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "NotificationChannels\\FCM\\FCMServiceProvider"
+      ]
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

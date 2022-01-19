@@ -144,5 +144,4 @@ The package based on [this](https://github.com/kreait/laravel-firebase/pull/69) 
 
 ## License
 
-* This package is licensed under [MIT License](https://opensource.org/licenses/MIT).
-* Your use of Firebase is governed by the [Terms of Service for Firebase Services](https://firebase.google.com/terms/).
+This package is licensed under [MIT License](https://opensource.org/licenses/MIT).

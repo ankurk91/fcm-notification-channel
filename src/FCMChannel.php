@@ -10,7 +10,6 @@ use Kreait\Firebase\Contract\Messaging as MessagingClient;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Messaging\Http\Request\SendMessageToTokens;
 use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use NotificationChannels\FCM\Exception\HttpException;
@@ -18,6 +17,11 @@ use NotificationChannels\FCM\Exception\RuntimeException;
 
 class FCMChannel
 {
+    /**
+     * @see \Kreait\Firebase\Messaging\Http\Request\SendMessageToTokens
+     */
+    protected const MAX_AMOUNT_OF_TOKENS = 500;
+
     /**
      * Send the notification to firebase.
      *
@@ -47,7 +51,7 @@ class FCMChannel
         try {
             // Send multicast
             if ($this->canSendToMulticast($targetType, $targetValue)) {
-                $chunkedTokens = array_chunk($targetValue, SendMessageToTokens::MAX_AMOUNT_OF_TOKENS);
+                $chunkedTokens = array_chunk($targetValue, self::MAX_AMOUNT_OF_TOKENS);
 
                 $responses = [];
                 foreach ($chunkedTokens as $chunkedToken) {
@@ -69,6 +73,13 @@ class FCMChannel
         }
     }
 
+    /**
+     * Multicast can only be sent to token type.
+     *
+     * @param string $targetType
+     * @param array $targetValue
+     * @return bool
+     */
     protected function canSendToMulticast(string $targetType, array $targetValue): bool
     {
         return $targetType === MessageTarget::TOKEN && count($targetValue) > 1;

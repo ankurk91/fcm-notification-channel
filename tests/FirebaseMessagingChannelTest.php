@@ -147,7 +147,7 @@ class FirebaseMessagingChannelTest extends TestCase
         });
 
         $this->expectException(HttpException::class);
-        $this->expectExceptionMessage('Failed to send notification.');
+        $this->expectExceptionMessage('A messaging error.');
 
         (new FCMChannel())->send(new TestModel(), new TestNotification);
     }

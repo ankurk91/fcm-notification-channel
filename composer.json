@@ -18,6 +18,7 @@
   ],
   "require": {
     "php": "^8.0",
+    "illuminate/events": "^8.13",
     "illuminate/notifications": "^8.13",
     "illuminate/support": "^8.13",
     "kreait/laravel-firebase": "^4.0"

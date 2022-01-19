@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace NotificationChannels\FCM;
 
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -14,6 +16,7 @@ use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use NotificationChannels\FCM\Exception\HttpException;
 use NotificationChannels\FCM\Exception\RuntimeException;
+use Throwable;
 
 class FCMChannel
 {
@@ -21,6 +24,11 @@ class FCMChannel
      * @see \Kreait\Firebase\Messaging\Http\Request\SendMessageToTokens
      */
     protected const MAX_AMOUNT_OF_TOKENS = 500;
+
+    public function __construct(protected Dispatcher $events)
+    {
+        //
+    }
 
     /**
      * Send the notification to firebase.
@@ -69,6 +77,8 @@ class FCMChannel
                 $client->send($message)
             ];
         } catch (MessagingException $exception) {
+            $this->failedNotification($notifiable, $notification, $exception);
+
             throw HttpException::sendingFailed($exception);
         }
     }
@@ -136,5 +146,26 @@ class FCMChannel
         $project = $notifiable->routeNotificationFor('FCMProject', $notification);
 
         return Firebase::project($project ?? null)->messaging();
+    }
+
+    /**
+     * Dispatch failed event.
+     *
+     * @param mixed $notifiable
+     * @param Notification $notification
+     * @param Throwable $exception
+     * @return array|null
+     */
+    protected function failedNotification($notifiable, Notification $notification, Throwable $exception)
+    {
+        return $this->events->dispatch(new NotificationFailed(
+            $notifiable,
+            $notification,
+            self::class,
+            [
+                'message' => $exception->getMessage(),
+                'exception' => $exception,
+            ]
+        ));
     }
 }

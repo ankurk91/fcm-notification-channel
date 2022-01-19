@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace NotificationChannels\FCM\Tests;
 
 use Closure;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 use Kreait\Firebase\Contract\Messaging as MessagingClient;
 use Kreait\Firebase\Exception\Messaging\MessagingError;
@@ -11,6 +12,7 @@ use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use Kreait\Laravel\Firebase\FirebaseProject;
+use Mockery;
 use NotificationChannels\FCM\Exception\HttpException;
 use NotificationChannels\FCM\Exception\RuntimeException;
 use NotificationChannels\FCM\FCMChannel;
@@ -21,6 +23,17 @@ use Roave\BetterReflection\Reflection\ReflectionObject;
 
 class FirebaseMessagingChannelTest extends TestCase
 {
+    protected FCMChannel $channel;
+    protected Dispatcher $events;
+
+    protected function setUp(): void
+    {
+        $this->events = Mockery::mock(Dispatcher::class);
+        $this->channel = new FCMChannel($this->events);
+
+        parent::setUp();
+    }
+
     protected function mockMessaging(Closure $mock): void
     {
         $messaging = $this->mock(MessagingClient::class, $mock);
@@ -47,7 +60,7 @@ class FirebaseMessagingChannelTest extends TestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Notification is missing toFCM method.');
 
-        (new FCMChannel())->send(new TestModel, new InvalidTestNotification);
+        $this->channel->send(new TestModel, new InvalidTestNotification);
     }
 
     /** @test */
@@ -66,7 +79,7 @@ class FirebaseMessagingChannelTest extends TestCase
             })->andReturn(['response-key' => 1]);
         });
 
-        $response = (new FCMChannel())->send(new TestModel, new TestNotification);
+        $response = $this->channel->send(new TestModel, new TestNotification);
 
         $this->assertIsArray($response);
         $this->assertIsArray(Arr::first($response));
@@ -89,7 +102,7 @@ class FirebaseMessagingChannelTest extends TestCase
             })->andReturn(['response-key' => 2]);
         });
 
-        $response = (new FCMChannel())->send(new TestModel(MessageTarget::TOPIC), new TestNotification);
+        $response = $this->channel->send(new TestModel(MessageTarget::TOPIC), new TestNotification);
 
         $this->assertIsArray($response);
         $this->assertIsArray(Arr::first($response));
@@ -112,7 +125,7 @@ class FirebaseMessagingChannelTest extends TestCase
             })->andReturn(['response-key' => 2]);
         });
 
-        $response = (new FCMChannel())->send(new TestModel(MessageTarget::CONDITION), new TestNotification);
+        $response = $this->channel->send(new TestModel(MessageTarget::CONDITION), new TestNotification);
 
         $this->assertIsArray($response);
         $this->assertIsArray(Arr::first($response));
@@ -133,7 +146,7 @@ class FirebaseMessagingChannelTest extends TestCase
             })->andReturn(MulticastSendReport::withItems([]));
         });
 
-        $response = (new FCMChannel())->send(new TestModel(MessageTarget::TOKEN, true), new TestNotification);
+        $response = $this->channel->send(new TestModel(MessageTarget::TOKEN, true), new TestNotification);
 
         $this->assertIsArray($response);
         $this->assertInstanceOf(MulticastSendReport::class, Arr::first($response));
@@ -146,16 +159,17 @@ class FirebaseMessagingChannelTest extends TestCase
             $mock->shouldReceive('send')->andThrows(new MessagingError('A messaging error.'));
         });
 
+        $this->events->shouldReceive('dispatch')->once()->withAnyArgs();
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('A messaging error.');
 
-        (new FCMChannel())->send(new TestModel(), new TestNotification);
+        $this->channel->send(new TestModel(), new TestNotification);
     }
 
     /** @test */
     public function nothing_is_sent_when_no_token_is_supplied()
     {
-        $response = (new FCMChannel())->send(new TestModel(null), new TestNotification);
+        $response = $this->channel->send(new TestModel(null), new TestNotification);
 
         $this->assertIsArray($response);
         $this->assertEmpty($response);

@@ -124,6 +124,59 @@ Notification::route('FCM', 'your topic name')
     ->notify(new ExampleNotification());
 ```
 
+### Events
+
+* The package utilises Laravel's inbuilt
+  notification [events](https://laravel.com/docs/8.x/notifications#notification-events)
+* You can listen to these events in your project's `EventServiceProvider` like:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+
+class EventServiceProvider extends ServiceProvider
+{
+    protected $listen = [
+        \Illuminate\Notifications\Events\NotificationSent::class => [
+            \App\Listeners\FCMNotificationSent::class,
+        ],
+        \Illuminate\Notifications\Events\NotificationFailed::class => [
+            \App\Listeners\FCMNotificationFailed::class,
+        ],
+    ];    
+}
+```
+
+Here is the example of failed event listener class
+```php
+<?php
+
+namespace App\Listeners;
+
+use App\Models\User;
+use NotificationChannels\FCM\FCMChannel;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Events\NotificationFailed;
+
+class FCMNotificationFailed implements ShouldQueue
+{
+    public function handle(NotificationFailed $event)
+    {
+        if ($event->channel !== FCMChannel::class) {
+            return;
+        }
+
+        /** @var User $user */
+        $user = $event->notifiable;
+        
+        // Do something
+    }
+}
+```
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.

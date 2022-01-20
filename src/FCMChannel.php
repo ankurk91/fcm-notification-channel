@@ -10,11 +10,13 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Kreait\Firebase\Contract\Messaging as MessagingClient;
 use Kreait\Firebase\Exception\FirebaseException;
+use Kreait\Firebase\Exception\Messaging\NotFound;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use NotificationChannels\FCM\Exception\HttpException;
+use NotificationChannels\FCM\Exception\InvalidRecipientException;
 use NotificationChannels\FCM\Exception\RuntimeException;
 use Throwable;
 
@@ -76,6 +78,10 @@ class FCMChannel
             return [
                 $client->send($message)
             ];
+        } catch (NotFound $exception) {
+            $this->emitFailedEvent($notifiable, $notification, $exception);
+
+            throw InvalidRecipientException::make($exception);
         } catch (MessagingException $exception) {
             $this->emitFailedEvent($notifiable, $notification, $exception);
 

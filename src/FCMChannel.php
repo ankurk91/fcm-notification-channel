@@ -35,9 +35,9 @@ class FCMChannel
      *
      * @param mixed $notifiable
      * @param Notification $notification
-     * @return array
+     * @return array<mixed>
      *
-     * @throws RuntimeException|FirebaseException
+     * @throws FirebaseException
      */
     public function send($notifiable, Notification $notification): array
     {
@@ -77,7 +77,7 @@ class FCMChannel
                 $client->send($message)
             ];
         } catch (MessagingException $exception) {
-            $this->failedNotification($notifiable, $notification, $exception);
+            $this->emitFailedEvent($notifiable, $notification, $exception);
 
             throw HttpException::sendingFailed($exception);
         }
@@ -118,7 +118,7 @@ class FCMChannel
      *
      * @param mixed $notifiable
      * @param Notification $notification
-     * @return array
+     * @return array<mixed>
      */
     protected function getTarget($notifiable, Notification $notification): array
     {
@@ -154,11 +154,10 @@ class FCMChannel
      * @param mixed $notifiable
      * @param Notification $notification
      * @param Throwable $exception
-     * @return array|null
      */
-    protected function failedNotification($notifiable, Notification $notification, Throwable $exception)
+    protected function emitFailedEvent($notifiable, Notification $notification, Throwable $exception): void
     {
-        return $this->events->dispatch(new NotificationFailed(
+        $this->events->dispatch(new NotificationFailed(
             $notifiable,
             $notification,
             self::class,

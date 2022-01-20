@@ -5,7 +5,7 @@
 [![License](https://badgen.net/packagist/license/ankurk91/fcm-notification-channel)](LICENSE.txt)
 [![Downloads](https://badgen.net/packagist/dt/ankurk91/fcm-notification-channel)](https://packagist.org/packages/ankurk91/fcm-notification-channel/stats)
 [![GH-Actions](https://github.com/ankurk91/fcm-notification-channel/workflows/tests/badge.svg)](https://github.com/ankurk91/fcm-notification-channel/actions)
-[![codecov](https://codecov.io/gh/ankurk91/fcm-notification-channel/branch/master/graph/badge.svg)](https://codecov.io/gh/ankurk91/fcm-notification-channel)
+[![codecov](https://codecov.io/gh/ankurk91/fcm-notification-channel/branch/main/graph/badge.svg)](https://codecov.io/gh/ankurk91/fcm-notification-channel)
 
 Send [Firebase](https://firebase.google.com/docs/cloud-messaging) push notifications with Laravel php framework.
 

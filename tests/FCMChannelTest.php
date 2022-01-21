@@ -21,7 +21,7 @@ use NotificationChannels\FCM\Tests\Resources\TestModel;
 use NotificationChannels\FCM\Tests\Resources\TestNotification;
 use Roave\BetterReflection\Reflection\ReflectionObject;
 
-class FirebaseMessagingChannelTest extends TestCase
+class FCMChannelTest extends TestCase
 {
     protected FCMChannel $channel;
     protected Dispatcher $events;

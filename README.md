@@ -17,10 +17,10 @@ You can install this package via composer:
 composer require ankurk91/fcm-notification-channel
 ```
 
-This package relies on [laravel-firebase](https://github.com/kreait/laravel-firebase) package to interact with 
-Firebase services. Configure it properly before proceeding.
+This package relies on [laravel-firebase](https://github.com/kreait/laravel-firebase) package to interact with Firebase
+services. Configure it properly before proceeding.
 
-### Usage
+## Usage
 
 You can use the FCM channel in the `via()` method inside your Notification class:
 
@@ -111,46 +111,47 @@ class User extends Authenticatable
 
 ## Send to topics or conditions
 
-You can take advantage of Laravel's [on-demand](https://laravel.com/docs/8.x/notifications#on-demand-notifications) notifications
+You can use Laravel's [on-demand](https://laravel.com/docs/8.x/notifications#on-demand-notifications) notifications:
 
 ```php
 <?php
 
 use Illuminate\Support\Facades\Notification;
+use Kreait\Firebase\Messaging\MessageTarget;
 use App\Notification\ExampleNotification;
 
-Notification::route('FCM', 'your topic name')
-    ->route('FCMTargetType', \Kreait\Firebase\Messaging\MessageTarget::TOPIC)
+Notification::route('FCM', 'your topic')
+    ->route('FCMTargetType', MessageTarget::TOPIC)
     ->notify(new ExampleNotification());
 ```
 
-### Events
+## Events
 
-* The package utilises Laravel's inbuilt
-  notification [events](https://laravel.com/docs/8.x/notifications#notification-events)
-* You can listen to these events in your project's `EventServiceProvider` like:
+You can consume Laravel's inbuilt notification [events](https://laravel.com/docs/8.x/notifications#notification-events)
 
 ```php
 <?php
 
 namespace App\Providers;
 
+use Illuminate\Notifications\Events;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
-        \Illuminate\Notifications\Events\NotificationSent::class => [
+        Events\NotificationSent::class => [
             \App\Listeners\FCMNotificationSent::class,
         ],
-        \Illuminate\Notifications\Events\NotificationFailed::class => [
+        Events\NotificationFailed::class => [
             \App\Listeners\FCMNotificationFailed::class,
         ],
     ];    
 }
 ```
 
-Here is the example of failed event listener class
+Here is the example of the failed event listener class
+
 ```php
 <?php
 
@@ -172,22 +173,30 @@ class FCMNotificationFailed implements ShouldQueue
         /** @var User $user */
         $user = $event->notifiable;
         
-        // Do something
+        // Delete invalid device tokens from database      
     }
 }
 ```
 
-## Changelog
+Additionally, you may want to ignore this exception in your `app/Exceptions/Handler.php`
+
+```php
+protected $dontReport = [
+    \NotificationChannels\FCM\Exception\InvalidRecipientException::class,
+];
+```
+
+### Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
-## Testing
+### Testing
 
 ```bash
 composer test
 ```
 
-## Security
+### Security
 
 If you discover any security issue, please email `pro.ankurk1[at]gmail[dot]com` instead of using the issue tracker.
 
@@ -195,6 +204,6 @@ If you discover any security issue, please email `pro.ankurk1[at]gmail[dot]com` 
 
 The package based on [this](https://github.com/kreait/laravel-firebase/pull/69) PR
 
-## License
+### License
 
 This package is licensed under [MIT License](https://opensource.org/licenses/MIT).

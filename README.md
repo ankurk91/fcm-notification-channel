@@ -46,6 +46,7 @@ class ExampleNotification extends Notification implements ShouldQueue
     public function toFCM($notifiable): CloudMessage
     {
         return CloudMessage::new()
+            ->withDefaultSounds()
             ->withNotification([
                 'title' => 'Hello',
                 'body' => 'Message body',

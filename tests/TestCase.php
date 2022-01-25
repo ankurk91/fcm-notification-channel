@@ -10,6 +10,8 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
     protected function getPackageProviders($app): array
     {
-        return [Firebase\ServiceProvider::class];
+        return [
+            Firebase\ServiceProvider::class,
+        ];
     }
 }

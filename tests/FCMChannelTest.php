@@ -8,12 +8,14 @@ use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
 use Kreait\Firebase\Contract\Messaging as MessagingClient;
 use Kreait\Firebase\Exception\Messaging\MessagingError;
+use Kreait\Firebase\Exception\Messaging\NotFound;
 use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Firebase\Messaging\MulticastSendReport;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use Kreait\Laravel\Firebase\FirebaseProject;
 use Mockery;
 use NotificationChannels\FCM\Exception\HttpException;
+use NotificationChannels\FCM\Exception\InvalidRecipientException;
 use NotificationChannels\FCM\Exception\RuntimeException;
 use NotificationChannels\FCM\FCMChannel;
 use NotificationChannels\FCM\Tests\Resources\InvalidTestNotification;
@@ -162,6 +164,20 @@ class FCMChannelTest extends TestCase
         $this->events->shouldReceive('dispatch')->once()->withAnyArgs();
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage('A messaging error.');
+
+        $this->channel->send(new TestModel(), new TestNotification);
+    }
+
+    /** @test */
+    public function throws_exception_on_token_not_found()
+    {
+        $this->mockMessaging(function ($mock) {
+            $mock->shouldReceive('send')->andThrows(new NotFound('Invalid token.'));
+        });
+
+        $this->events->shouldReceive('dispatch')->once()->withAnyArgs();
+        $this->expectException(InvalidRecipientException::class);
+        $this->expectExceptionMessage('Invalid token.');
 
         $this->channel->send(new TestModel(), new TestNotification);
     }

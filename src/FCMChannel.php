@@ -113,7 +113,7 @@ class FCMChannel
     protected function getMessage($notifiable, Notification $notification): CloudMessage
     {
         if (!method_exists($notification, 'toFCM')) {
-            throw new RuntimeException('Notification is missing toFCM method.');
+            throw new RuntimeException('Notification class is missing toFCM method.');
         }
 
         return $notification->toFCM($notifiable);

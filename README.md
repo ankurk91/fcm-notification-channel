@@ -17,8 +17,18 @@ You can install this package via composer:
 composer require ankurk91/fcm-notification-channel
 ```
 
+## Configuration
+
 This package relies on [laravel-firebase](https://github.com/kreait/laravel-firebase) package to interact with Firebase
-services. Configure it properly before proceeding.
+services. Here is the minimal configuration you need in your `.env` file
+
+```dotenv
+# relative or full path to the Service Account JSON file
+FIREBASE_CREDENTIALS=firebase-credentials.json
+```
+
+You need to create a [service account](https://firebase.google.com/docs/admin/setup#initialize-sdk)
+and place the JSON file in your project root.
 
 ## Usage
 
@@ -73,9 +83,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use Notifiable;
-    
-    protected $guarded = [];
-    
+       
     /**
     * Assuming that you have a database table which stores device tokens.
     */
@@ -110,9 +118,12 @@ class User extends Authenticatable
 }
 ```
 
-## Send to topics or conditions
+## Send to a topic or condition
 
-You can use Laravel's [on-demand](https://laravel.com/docs/8.x/notifications#on-demand-notifications) notifications:
+This package is not limited to sending notification to tokens.
+
+You can use Laravel's [on-demand](https://laravel.com/docs/8.x/notifications#on-demand-notifications) notifications to
+send to a topic or condition or multiple tokens
 
 ```php
 <?php
@@ -121,8 +132,16 @@ use Illuminate\Support\Facades\Notification;
 use Kreait\Firebase\Messaging\MessageTarget;
 use App\Notification\ExampleNotification;
 
-Notification::route('FCM', 'your topic')
+Notification::route('FCM', 'topicA')
     ->route('FCMTargetType', MessageTarget::TOPIC)
+    ->notify(new ExampleNotification());
+
+Notification::route('FCM', "'TopicA' in topics")
+    ->route('FCMTargetType', MessageTarget::CONDITION)
+    ->notify(new ExampleNotification());
+
+Notification::route('FCM', ['token_1', 'token_2'])
+    ->route('FCMTargetType', MessageTarget::TOKEN)
     ->notify(new ExampleNotification());
 ```
 
@@ -174,10 +193,13 @@ class FCMNotificationFailed implements ShouldQueue
         /** @var User $user */
         $user = $event->notifiable;
         
-        // Delete invalid device tokens from database      
+        //todo Delete invalid device tokens from database
     }
 }
 ```
+
+Read more about validating device
+tokens [here](https://firebase-php.readthedocs.io/en/stable/cloud-messaging.html#validating-registration-tokens)
 
 Additionally, you may want to ignore this exception in your `app/Exceptions/Handler.php`
 
@@ -203,7 +225,7 @@ If you discover any security issue, please email `pro.ankurk1[at]gmail[dot]com` 
 
 ### Attribution
 
-The package based on [this](https://github.com/kreait/laravel-firebase/pull/69) PR
+The package is based on [this](https://github.com/kreait/laravel-firebase/pull/69) PR
 
 ### License
 

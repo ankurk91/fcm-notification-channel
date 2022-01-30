@@ -60,7 +60,7 @@ class FCMChannelTest extends TestCase
     public function an_exception_is_thrown_if_to_FCM_method_is_missing()
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Notification is missing toFCM method.');
+        $this->expectExceptionMessage('Notification class is missing toFCM method.');
 
         $this->channel->send(new TestModel, new InvalidTestNotification);
     }

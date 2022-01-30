@@ -2,7 +2,7 @@
 
 ## 1.3.0
 
-* Throw separate exception on Invalid token
+* Throw a different exception on Invalid token error
 
 ## 1.1.0
 

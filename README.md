@@ -58,8 +58,8 @@ class ExampleNotification extends Notification implements ShouldQueue
         return CloudMessage::new()
             ->withDefaultSounds()
             ->withNotification([
-                'title' => 'Hello',
-                'body' => 'Message body',
+                'title' => 'Order shipped',
+                'body' => 'Your order for laptop is shipped.',
             ])         
             ->withData([
                 'key' => 'string value'
@@ -77,7 +77,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -92,7 +91,7 @@ class User extends Authenticatable
         return $this->hasMany(DeviceToken::class);
     }
     
-    public function routeNotificationForFCM(Notification $notification): string|array|null
+    public function routeNotificationForFCM($notification): string|array|null
     {
          return $this->deviceTokens->pluck('token')->toArray();
     }
@@ -102,7 +101,7 @@ class User extends Authenticatable
     * We will use TOKEN type when not specified
     * @see \Kreait\Firebase\Messaging\MessageTarget::TYPES
     */
-    public function routeNotificationForFCMTargetType(Notification $notification): ?string
+    public function routeNotificationForFCMTargetType($notification): ?string
     {
         return \Kreait\Firebase\Messaging\MessageTarget::TOKEN;
     }
@@ -111,7 +110,7 @@ class User extends Authenticatable
     * Optional method to determine which Firebase project to use
     * We will use default project when not specified
     */
-    public function routeNotificationForFCMProject(Notification $notification): ?string;
+    public function routeNotificationForFCMProject($notification): ?string
     {
         return config('firebase.default');
     }   
@@ -123,7 +122,7 @@ class User extends Authenticatable
 This package is not limited to sending notification to tokens.
 
 You can use Laravel's [on-demand](https://laravel.com/docs/8.x/notifications#on-demand-notifications) notifications to
-send to a topic or condition or multiple tokens
+send push notification to a topic or condition or multiple tokens.
 
 ```php
 <?php
@@ -147,7 +146,7 @@ Notification::route('FCM', ['token_1', 'token_2'])
 
 ## Events
 
-You can consume Laravel's inbuilt notification [events](https://laravel.com/docs/8.x/notifications#notification-events)
+You can consume Laravel's inbuilt notification [events](https://laravel.com/docs/9.x/notifications#notification-events)
 
 ```php
 <?php

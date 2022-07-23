@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace NotificationChannels\FCM\Exception;
 
-class RuntimeException extends \RuntimeException
+use RuntimeException as BaseException;
+
+class RuntimeException extends BaseException
 {
     //
 }

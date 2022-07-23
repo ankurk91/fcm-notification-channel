@@ -6,7 +6,7 @@ namespace NotificationChannels\FCM\Exception;
 use Kreait\Firebase\Exception\HasErrors;
 use Kreait\Firebase\Exception\MessagingException;
 
-class HttpException extends \RuntimeException implements MessagingException
+class HttpException extends RuntimeException implements MessagingException
 {
     use HasErrors;
 

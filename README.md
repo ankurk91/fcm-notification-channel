@@ -14,7 +14,7 @@ Send [Firebase](https://firebase.google.com/docs/cloud-messaging) push notificat
 You can install this package via composer:
 
 ```bash
-composer require ankurk91/fcm-notification-channel
+composer require "ankurk91/fcm-notification-channel"
 ```
 
 ## Configuration
@@ -27,7 +27,7 @@ services. Here is the minimal configuration you need in your `.env` file
 FIREBASE_CREDENTIALS=firebase-credentials.json
 ```
 
-You need to create a [service account](https://firebase.google.com/docs/admin/setup#initialize-sdk)
+You will need to create a [service account](https://firebase.google.com/docs/admin/setup#initialize-sdk)
 and place the JSON file in your project root.
 
 ## Usage
@@ -62,7 +62,7 @@ class ExampleNotification extends Notification implements ShouldQueue
                 'body' => 'Your order for laptop is shipped.',
             ])         
             ->withData([
-                'key' => 'string value'
+                'orderId' => '#123'
             ]);
     }    
 }
@@ -121,7 +121,7 @@ class User extends Authenticatable
 
 This package is not limited to sending notification to tokens.
 
-You can use Laravel's [on-demand](https://laravel.com/docs/8.x/notifications#on-demand-notifications) notifications to
+You can use Laravel's [on-demand](https://laravel.com/docs/9.x/notifications#on-demand-notifications) notifications to
 send push notification to a topic or condition or multiple tokens.
 
 ```php

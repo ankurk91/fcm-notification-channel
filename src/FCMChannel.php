@@ -13,6 +13,7 @@ use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\Messaging\NotFound;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Http\Request\SendMessageToTokens;
 use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use NotificationChannels\FCM\Exception\HttpException;
@@ -22,10 +23,7 @@ use Throwable;
 
 class FCMChannel
 {
-    /**
-     * @see \Kreait\Firebase\Messaging\Http\Request\SendMessageToTokens
-     */
-    protected const MAX_AMOUNT_OF_TOKENS = 500;
+    protected const BATCH_MESSAGE_LIMIT = SendMessageToTokens::MAX_AMOUNT_OF_TOKENS;
 
     public function __construct(protected Dispatcher $events)
     {
@@ -33,7 +31,7 @@ class FCMChannel
     }
 
     /**
-     * Send the notification to firebase.
+     * Send the notification payload to firebase.
      *
      * @param mixed $notifiable
      * @param Notification $notification
@@ -61,7 +59,7 @@ class FCMChannel
         try {
             // Send multicast
             if ($this->canSendToMulticast($targetType, $targetValue)) {
-                $chunkedTokens = array_chunk($targetValue, self::MAX_AMOUNT_OF_TOKENS);
+                $chunkedTokens = array_chunk($targetValue, self::BATCH_MESSAGE_LIMIT);
 
                 $responses = [];
                 foreach ($chunkedTokens as $chunkedToken) {
@@ -71,7 +69,7 @@ class FCMChannel
                 return $responses;
             }
 
-            // Set target and type since we are sure that target is single
+            // Set the target and type; since we are sure that target is single
             $message = $message->withChangedTarget($targetType, Arr::first($targetValue));
 
             // Send to single target
@@ -124,7 +122,10 @@ class FCMChannel
      *
      * @param mixed $notifiable
      * @param Notification $notification
-     * @return array<mixed>
+     * @return array{
+     *     targetType: string,
+     *     targetValue: array,
+     * }
      */
     protected function getTarget($notifiable, Notification $notification): array
     {
@@ -141,7 +142,7 @@ class FCMChannel
     }
 
     /**
-     * Get firebase messaging instance for the correct project.
+     * Get firebase messaging instance for the configured project.
      *
      * @param mixed $notifiable
      * @param Notification $notification

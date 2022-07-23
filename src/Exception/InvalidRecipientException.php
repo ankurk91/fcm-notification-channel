@@ -5,7 +5,7 @@ namespace NotificationChannels\FCM\Exception;
 
 use Throwable;
 
-class InvalidRecipientException extends \RuntimeException
+class InvalidRecipientException extends RuntimeException
 {
     public static function make(Throwable $exception): self
     {

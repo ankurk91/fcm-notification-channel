@@ -177,8 +177,10 @@ Here is the example of the failed event listener class
 namespace App\Listeners;
 
 use App\Models\User;
+use Illuminate\Support\Arr;
 use NotificationChannels\FCM\FCMChannel;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Kreait\Laravel\Firebase\Facades\Firebase;
 use Illuminate\Notifications\Events\NotificationFailed;
 
 class FCMNotificationFailed implements ShouldQueue
@@ -192,7 +194,23 @@ class FCMNotificationFailed implements ShouldQueue
         /** @var User $user */
         $user = $event->notifiable;
         
-        //todo Delete invalid device tokens from database
+        $invalidTokens = $this->findInvalidTokens($user);
+        if (count($invalidTokens)) {           
+            $user->deviceTokens()->whereIn('token', $invalidTokens)->delete();
+        }
+    }
+    
+    protected function findInvalidTokens(User $user): array
+    {
+        $tokens = Arr::wrap($user->routeNotificationFor('FCM'));
+        if (! count($tokens)) {
+            return [];
+        }
+
+        $project = $user->routeNotificationFor('FCMProject');
+        $response = Firebase::project($project)->messaging()->validateRegistrationTokens($tokens);
+
+        return array_unique(array_merge($response['invalid'], $response['unknown']));
     }
 }
 ```

@@ -6,6 +6,8 @@ namespace NotificationChannels\FCM\Tests;
 use Closure;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Kreait\Firebase\Contract\Messaging as MessagingClient;
 use Kreait\Firebase\Exception\Messaging\MessagingError;
 use Kreait\Firebase\Exception\Messaging\NotFound;
@@ -49,7 +51,7 @@ class FCMChannelTest extends TestCase
             ->andReturn($project);
     }
 
-    protected function getPropertyValue($object, string $property)
+    protected function getPropertyValue(object $object, string $property)
     {
         return ReflectionObject::createFromInstance($object)
             ->getProperty($property)
@@ -189,5 +191,28 @@ class FCMChannelTest extends TestCase
 
         $this->assertIsArray($response);
         $this->assertEmpty($response);
+    }
+
+    /** @test */
+    public function it_supports_anonymous_notifiable()
+    {
+        $this->mockMessaging(function ($mock) {
+            $mock->shouldReceive('send')->withArgs(function ($message) {
+                $this->assertEquals('token_1', $this->getPropertyValue($message, 'target')->value());
+
+                $this->assertEquals([
+                    'title' => 'A notification title',
+                    'body' => 'A notification body',
+                ], $this->getPropertyValue($message, 'notification')->jsonSerialize());
+
+                return true;
+            })->andReturn(['response-key' => 1]);
+        });
+
+        Event::fake();
+
+        Notification::route('FCM', 'token_1')
+            ->route('FCMTargetType', MessageTarget::TOKEN)
+            ->notify(new TestNotification);
     }
 }

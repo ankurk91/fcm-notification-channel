@@ -160,7 +160,7 @@ class EventServiceProvider extends ServiceProvider
 {
     protected $listen = [
         Events\NotificationSent::class => [
-            \App\Listeners\FCMNotificationSent::class,
+            //\App\Listeners\FCMNotificationSent::class,
         ],
         Events\NotificationFailed::class => [
             \App\Listeners\FCMNotificationFailed::class,
@@ -242,7 +242,7 @@ If you discover any security issue, please email `pro.ankurk1[at]gmail[dot]com` 
 
 ### Attribution
 
-The package is based on [this](https://github.com/kreait/laravel-firebase/pull/69) PR
+The package is based on [this](https://github.com/kreait/laravel-firebase/pull/69) rejected PR
 
 ### License
 

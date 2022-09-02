@@ -48,7 +48,6 @@
   "extra": {
     "laravel": {
       "providers": [
-        "NotificationChannels\\FCM\\FCMServiceProvider"
       ]
     }
   },

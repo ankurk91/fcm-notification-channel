@@ -30,6 +30,12 @@ FIREBASE_CREDENTIALS=firebase-credentials.json
 You will need to create a [service account](https://firebase.google.com/docs/admin/setup#initialize-sdk)
 and place the JSON file in your project root.
 
+Additionally, you can update your `.gitignore` file
+
+```gitignore
+/firebase-credentials*.json
+```
+
 ## Usage
 
 You can use the FCM channel in the `via()` method inside your Notification class:

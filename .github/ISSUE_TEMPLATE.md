@@ -8,7 +8,7 @@
 
 **Tell about your platform**
 
-* Laravel version : 8.x|9.x
+* Laravel version : 9.x
 * php version : 8.x
 
 **Current behavior**

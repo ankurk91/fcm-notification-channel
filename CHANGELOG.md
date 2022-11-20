@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+
+* Drop Laravel 8 support
+* Test on php 8.2
+
 ## 1.3.0
 
 * Throw a different exception on Invalid token error

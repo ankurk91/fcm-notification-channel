@@ -18,13 +18,13 @@
   ],
   "require": {
     "php": "^8.0",
-    "illuminate/events": "^8.13 || ^9.3",
-    "illuminate/notifications": "^8.13 || ^9.3",
-    "illuminate/support": "^8.13 || ^9.3",
-    "kreait/laravel-firebase": "^4.1"
+    "illuminate/events": "^9.34",
+    "illuminate/notifications": "^9.34",
+    "illuminate/support": "^9.34",
+    "kreait/laravel-firebase": "^4.2"
   },
   "require-dev": {
-    "orchestra/testbench": "^6.24 || ^7.1",
+    "orchestra/testbench": "^7.10",
     "roave/better-reflection": "^5.0"
   },
   "autoload": {

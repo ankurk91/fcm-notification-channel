@@ -9,6 +9,17 @@
 
 Send [Firebase](https://firebase.google.com/docs/cloud-messaging) push notifications with Laravel php framework.
 
+## Highlights
+
+* Using the latest Firebase HTTP v1 [API](https://firebase.google.com/docs/cloud-messaging/migrate-v1)
+* Send message to a topic or condition :wink:
+* Send message to a specific device or multiple devices (Multicast)
+* Send additional RAW data with notification
+* Supports multiple Firebase projects in single Laravel app:fire:
+* Invalid token handling with event and listeners
+* Fully tested package with automated test cases
+* Powered by battle tested [Firebase php SDK](https://firebase-php.readthedocs.io/) :rocket:
+
 ## Installation
 
 You can install this package via composer:

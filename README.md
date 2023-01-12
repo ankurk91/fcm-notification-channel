@@ -235,7 +235,7 @@ class FCMNotificationFailed implements ShouldQueue
 Read more about validating device
 tokens [here](https://firebase-php.readthedocs.io/en/stable/cloud-messaging.html#validating-registration-tokens)
 
-Additionally, you may want to ignore this exception in your `app/Exceptions/Handler.php`
+Then; you may want to ignore this exception in your `app/Exceptions/Handler.php`
 
 ```php
 protected $dontReport = [

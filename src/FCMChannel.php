@@ -8,6 +8,7 @@ use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Contract\Messaging as MessagingClient;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\Messaging\NotFound;
@@ -23,7 +24,7 @@ use Throwable;
 
 class FCMChannel
 {
-    protected const BATCH_MESSAGE_LIMIT = SendMessageToTokens::MAX_AMOUNT_OF_TOKENS;
+    protected const BATCH_MESSAGE_LIMIT = Messaging::BATCH_MESSAGE_LIMIT;
 
     public function __construct(protected Dispatcher $events)
     {

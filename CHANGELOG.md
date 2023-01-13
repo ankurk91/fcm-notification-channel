@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.0](https://github.com/ankurk91/laravel-bundler/compare/1.4.0..1.5.0)
+
+* Bump `kreait/laravel-firebase` package to v5.x
+* Drop php 8.0 support
+
 ## 1.4.0
 
 * Drop Laravel 8 support

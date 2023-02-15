@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.1](https://github.com/ankurk91/laravel-bundler/compare/1.5.0..1.5.1)
+
+* Add support for Laravel 10
+
 ## [1.5.0](https://github.com/ankurk91/laravel-bundler/compare/1.4.0..1.5.0)
 
 * Bump `kreait/laravel-firebase` package to v5.x

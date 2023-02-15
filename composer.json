@@ -25,7 +25,7 @@
   },
   "require-dev": {
     "orchestra/testbench": "^7.10 || ^8.0",
-    "phpunit/phpunit": "^9.5",  
+    "phpunit/phpunit": "^9.5",
     "roave/better-reflection": "^5.0"
   },
   "autoload": {
@@ -43,8 +43,8 @@
     "preferred-install": "dist"
   },
   "scripts": {
-    "test": "vendor/bin/phpunit --testdox --color=always",
-    "test:coverage": "vendor/bin/phpunit --testdox --color=always --coverage-clover=coverage.xml"
+    "test": "vendor/bin/phpunit",
+    "test:coverage": "vendor/bin/phpunit --coverage-clover=coverage.xml"
   },
   "extra": {
     "laravel": {

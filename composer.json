@@ -21,7 +21,8 @@
     "illuminate/events": "^9.34 || ^10.0",
     "illuminate/notifications": "^9.34 || ^10.0",
     "illuminate/support": "^9.34 || ^10.0",
-    "kreait/laravel-firebase": "^5.0"
+    "kreait/firebase-php": "^7.5",
+    "kreait/laravel-firebase": "^5.2"
   },
   "require-dev": {
     "orchestra/testbench": "^7.10 || ^8.0",

@@ -8,13 +8,11 @@ use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Contract\Messaging as MessagingClient;
 use Kreait\Firebase\Exception\FirebaseException;
 use Kreait\Firebase\Exception\Messaging\NotFound;
 use Kreait\Firebase\Exception\MessagingException;
 use Kreait\Firebase\Messaging\CloudMessage;
-use Kreait\Firebase\Messaging\Http\Request\SendMessageToTokens;
 use Kreait\Firebase\Messaging\MessageTarget;
 use Kreait\Laravel\Firebase\Facades\Firebase;
 use NotificationChannels\FCM\Exception\HttpException;
@@ -24,8 +22,6 @@ use Throwable;
 
 class FCMChannel
 {
-    protected const BATCH_MESSAGE_LIMIT = Messaging::BATCH_MESSAGE_LIMIT;
-
     public function __construct(protected Dispatcher $events)
     {
         //
@@ -36,11 +32,11 @@ class FCMChannel
      *
      * @param mixed $notifiable
      * @param Notification $notification
-     * @return array<mixed>
+     * @return array<non-empty-string, mixed>|null|\Kreait\Firebase\Messaging\MulticastSendReport
      *
      * @throws FirebaseException
      */
-    public function send($notifiable, Notification $notification): array
+    public function send($notifiable, Notification $notification)
     {
         // Build the target
         [$targetType, $targetValue] = $this->getTarget($notifiable, $notification);
@@ -50,7 +46,7 @@ class FCMChannel
 
         // Check if there is a target, otherwise return an empty array
         if (empty($targetValue)) {
-            return [];
+            return null;
         }
 
         // Make the messaging client
@@ -60,23 +56,14 @@ class FCMChannel
         try {
             // Send multicast
             if ($this->canSendToMulticast($targetType, $targetValue)) {
-                $chunkedTokens = array_chunk($targetValue, self::BATCH_MESSAGE_LIMIT);
-
-                $responses = [];
-                foreach ($chunkedTokens as $chunkedToken) {
-                    $responses[] = $client->sendMulticast($message, $chunkedToken);
-                }
-
-                return $responses;
+                return $client->sendMulticast($message, $targetValue);
             }
 
             // Set the target and type; since we are sure that target is single
             $message = $message->withChangedTarget($targetType, Arr::first($targetValue));
 
             // Send to single target
-            return [
-                $client->send($message)
-            ];
+            return $client->send($message);
         } catch (NotFound $exception) {
             $this->emitFailedEvent($notifiable, $notification, $exception);
 

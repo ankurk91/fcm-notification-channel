@@ -5,7 +5,6 @@ namespace NotificationChannels\FCM\Tests;
 
 use Closure;
 use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Kreait\Firebase\Contract\Messaging as MessagingClient;
@@ -86,8 +85,7 @@ class FCMChannelTest extends TestCase
         $response = $this->channel->send(new TestModel, new TestNotification);
 
         $this->assertIsArray($response);
-        $this->assertIsArray(Arr::first($response));
-        $this->assertArrayHasKey('response-key', Arr::first($response));
+        $this->assertArrayHasKey('response-key', $response);
     }
 
     /** @test */
@@ -109,8 +107,7 @@ class FCMChannelTest extends TestCase
         $response = $this->channel->send(new TestModel(MessageTarget::TOPIC), new TestNotification);
 
         $this->assertIsArray($response);
-        $this->assertIsArray(Arr::first($response));
-        $this->assertArrayHasKey('response-key', Arr::first($response));
+        $this->assertArrayHasKey('response-key', $response);
     }
 
     /** @test */
@@ -126,14 +123,13 @@ class FCMChannelTest extends TestCase
                 ], $this->getPropertyValue($message, 'notification')->jsonSerialize());
 
                 return true;
-            })->andReturn(['response-key' => 2]);
+            })->andReturn(['response-key' => 3]);
         });
 
         $response = $this->channel->send(new TestModel(MessageTarget::CONDITION), new TestNotification);
 
         $this->assertIsArray($response);
-        $this->assertIsArray(Arr::first($response));
-        $this->assertArrayHasKey('response-key', Arr::first($response));
+        $this->assertArrayHasKey('response-key', $response);
     }
 
     /** @test */
@@ -152,8 +148,7 @@ class FCMChannelTest extends TestCase
 
         $response = $this->channel->send(new TestModel(MessageTarget::TOKEN, true), new TestNotification);
 
-        $this->assertIsArray($response);
-        $this->assertInstanceOf(MulticastSendReport::class, Arr::first($response));
+        $this->assertInstanceOf(MulticastSendReport::class, $response);
     }
 
     /** @test */
@@ -189,8 +184,7 @@ class FCMChannelTest extends TestCase
     {
         $response = $this->channel->send(new TestModel(null), new TestNotification);
 
-        $this->assertIsArray($response);
-        $this->assertEmpty($response);
+        $this->assertNull($response);
     }
 
     /** @test */
@@ -206,7 +200,7 @@ class FCMChannelTest extends TestCase
                 ], $this->getPropertyValue($message, 'notification')->jsonSerialize());
 
                 return true;
-            })->andReturn(['response-key' => 1]);
+            })->andReturn(['response-key' => 5]);
         });
 
         Event::fake();

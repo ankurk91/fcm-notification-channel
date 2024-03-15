@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.1.0](https://github.com/ankurk91/laravel-bundler/compare/2.0.0..2.1.0)
+
+* Allow Laravel 11
+
 ## [2.0.0](https://github.com/ankurk91/laravel-bundler/compare/1.5.1..2.0.0)
 
 * Require `kreait/firebase-php@^7.5` due to [Discontinued FCM Messaging API](https://github.com/kreait/firebase-php/issues/804)

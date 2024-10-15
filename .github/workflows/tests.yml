@@ -46,6 +46,6 @@ jobs:
         run: composer test:coverage
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: false

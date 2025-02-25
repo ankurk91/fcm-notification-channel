@@ -22,8 +22,12 @@ use NotificationChannels\FCM\FCMChannel;
 use NotificationChannels\FCM\Tests\Resources\InvalidTestNotification;
 use NotificationChannels\FCM\Tests\Resources\TestModel;
 use NotificationChannels\FCM\Tests\Resources\TestNotification;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Roave\BetterReflection\Reflection\ReflectionObject;
 
+#[CoversClass(FCMChannel::class)]
+#[CoversClass(InvalidRecipientException::class)]
+#[CoversClass(HttpException::class)]
 class FCMChannelTest extends TestCase
 {
     protected FCMChannel $channel;
@@ -57,8 +61,7 @@ class FCMChannelTest extends TestCase
             ->getValue($object);
     }
 
-    /** @test */
-    public function an_exception_is_thrown_if_to_FCM_method_is_missing()
+    public function test_an_exception_is_thrown_if_to_FCM_method_is_missing()
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Notification class is missing toFCM method.');
@@ -66,8 +69,7 @@ class FCMChannelTest extends TestCase
         $this->channel->send(new TestModel, new InvalidTestNotification);
     }
 
-    /** @test */
-    public function a_message_can_be_send_to_a_target()
+    public function test_a_message_can_be_send_to_a_target()
     {
         $this->mockMessaging(function ($mock) {
             $mock->shouldReceive('send')->withArgs(function ($message) {
@@ -88,8 +90,7 @@ class FCMChannelTest extends TestCase
         $this->assertArrayHasKey('response-key', $response);
     }
 
-    /** @test */
-    public function a_message_can_be_send_to_a_topic()
+    public function test_a_message_can_be_send_to_a_topic()
     {
         $this->mockMessaging(function ($mock) {
             $mock->shouldReceive('send')->withArgs(function ($message) {
@@ -110,8 +111,7 @@ class FCMChannelTest extends TestCase
         $this->assertArrayHasKey('response-key', $response);
     }
 
-    /** @test */
-    public function a_message_can_be_send_to_a_condition()
+    public function test_a_message_can_be_send_to_a_condition()
     {
         $this->mockMessaging(function ($mock) {
             $mock->shouldReceive('send')->withArgs(function ($message) {
@@ -132,8 +132,7 @@ class FCMChannelTest extends TestCase
         $this->assertArrayHasKey('response-key', $response);
     }
 
-    /** @test */
-    public function a_message_can_be_send_to_multicast()
+    public function test_a_message_can_be_send_to_multicast()
     {
         $this->mockMessaging(function ($mock) {
             $mock->shouldReceive('sendMulticast')->withArgs(function ($message) {
@@ -151,8 +150,7 @@ class FCMChannelTest extends TestCase
         $this->assertInstanceOf(MulticastSendReport::class, $response);
     }
 
-    /** @test */
-    public function an_exception_will_be_thrown_when_failed()
+    public function test_an_exception_will_be_thrown_when_failed()
     {
         $this->mockMessaging(function ($mock) {
             $mock->shouldReceive('send')->andThrows(new MessagingError('A messaging error.'));
@@ -165,8 +163,7 @@ class FCMChannelTest extends TestCase
         $this->channel->send(new TestModel(), new TestNotification);
     }
 
-    /** @test */
-    public function throws_exception_on_token_not_found()
+    public function test_throws_exception_on_token_not_found()
     {
         $this->mockMessaging(function ($mock) {
             $mock->shouldReceive('send')->andThrows(new NotFound('Invalid token.'));
@@ -179,16 +176,14 @@ class FCMChannelTest extends TestCase
         $this->channel->send(new TestModel(), new TestNotification);
     }
 
-    /** @test */
-    public function nothing_is_sent_when_no_token_is_supplied()
+    public function test_nothing_is_sent_when_no_token_is_supplied()
     {
         $response = $this->channel->send(new TestModel(null), new TestNotification);
 
         $this->assertNull($response);
     }
 
-    /** @test */
-    public function it_supports_anonymous_notifiable()
+    public function test_it_supports_anonymous_notifiable()
     {
         $this->mockMessaging(function ($mock) {
             $mock->shouldReceive('send')->withArgs(function ($message) {

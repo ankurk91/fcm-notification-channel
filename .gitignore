@@ -48,6 +48,7 @@ composer.lock
 *.key
 
 # Other
+.phpunit.cache/
 .phpunit.result.cache
 phpunit.xml
 coverage.xml

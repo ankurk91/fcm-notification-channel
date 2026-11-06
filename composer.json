@@ -18,16 +18,15 @@
   ],
   "require": {
     "php": "^8.3",
-    "illuminate/events": "^11.0 || ^12.0",
-    "illuminate/notifications": "^11.0 || ^12.0",
-    "illuminate/support": "^11.0 || ^12.0",
-    "kreait/firebase-php": "^7.17",
-    "kreait/laravel-firebase": "^6.0"
+    "illuminate/events": "^12.0 || ^13.0",
+    "illuminate/notifications": "^12.0 || ^13.0",
+    "illuminate/support": "^12.0 || ^13.0",
+    "kreait/firebase-php": "^7.19 || ^8.0",
+    "kreait/laravel-firebase": "^6.1 || ^7.1"
   },
   "require-dev": {
-    "orchestra/testbench": "^9.0 || ^10.0",
-    "phpunit/phpunit": "^10 || ^11.0",
-    "roave/better-reflection": "^6.0"
+    "orchestra/testbench": "^10.0 || ^11.0",
+    "phpunit/phpunit": "^11.5 || ^12.0 || ^13.0"
   },
   "autoload": {
     "psr-4": {

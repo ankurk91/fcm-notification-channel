@@ -5,6 +5,7 @@ namespace NotificationChannels\FCM\Tests;
 
 use Closure;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Kreait\Firebase\Contract\Messaging as MessagingClient;
@@ -23,7 +24,7 @@ use NotificationChannels\FCM\Tests\Resources\InvalidTestNotification;
 use NotificationChannels\FCM\Tests\Resources\TestModel;
 use NotificationChannels\FCM\Tests\Resources\TestNotification;
 use PHPUnit\Framework\Attributes\CoversClass;
-use Roave\BetterReflection\Reflection\ReflectionObject;
+use ReflectionProperty;
 
 #[CoversClass(FCMChannel::class)]
 #[CoversClass(InvalidRecipientException::class)]
@@ -56,9 +57,7 @@ class FCMChannelTest extends TestCase
 
     protected function getPropertyValue(object $object, string $property)
     {
-        return ReflectionObject::createFromInstance($object)
-            ->getProperty($property)
-            ->getValue($object);
+        return (new ReflectionProperty($object, $property))->getValue($object);
     }
 
     public function test_an_exception_is_thrown_if_to_FCM_method_is_missing()
@@ -174,6 +173,22 @@ class FCMChannelTest extends TestCase
         $this->expectExceptionMessage('Invalid token.');
 
         $this->channel->send(new TestModel(), new TestNotification);
+    }
+
+    public function test_throws_exception_on_unsupported_target_type()
+    {
+        $this->mockMessaging(function ($mock) {
+            $mock->shouldNotReceive('send');
+        });
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Unsupported FCM target type: invalid');
+
+        $notifiable = (new AnonymousNotifiable)
+            ->route('FCM', 'token_1')
+            ->route('FCMTargetType', 'invalid');
+
+        $this->channel->send($notifiable, new TestNotification);
     }
 
     public function test_nothing_is_sent_when_no_token_is_supplied()

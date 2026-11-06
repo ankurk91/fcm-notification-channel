@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.0](https://github.com/ankurk91/fcm-notification-channel/compare/2.2.0..2.3.0)
+
+* Allow Laravel 13
+* Drop Laravel 11
+* Allow `kreait/firebase-php@^8.0` and `kreait/laravel-firebase@^7.0`
+
 ## [2.2.0](https://github.com/ankurk91/fcm-notification-channel/compare/2.1.0..2.2.0)
 
 * Allow Laravel 12

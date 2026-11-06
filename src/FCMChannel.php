@@ -60,7 +60,7 @@ class FCMChannel
             }
 
             // Set the target and type; since we are sure that target is single
-            $message = $message->withChangedTarget($targetType, Arr::first($targetValue));
+            $message = $this->withTarget($message, $targetType, (string)Arr::first($targetValue));
 
             // Send to single target
             return $client->send($message);
@@ -85,6 +85,30 @@ class FCMChannel
     protected function canSendToMulticast(string $targetType, array $targetValue): bool
     {
         return $targetType === MessageTarget::TOKEN && count($targetValue) > 1;
+    }
+
+    /**
+     * Set the target on the message.
+     *
+     * Supports both firebase-php v7 (`to*()`) and v8 (`with*()`) builder methods.
+     *
+     * @param CloudMessage $message
+     * @param string $targetType
+     * @param string $targetValue
+     * @return CloudMessage
+     *
+     * @throws RuntimeException
+     */
+    protected function withTarget(CloudMessage $message, string $targetType, string $targetValue): CloudMessage
+    {
+        $isV8 = method_exists($message, 'withToken');
+
+        return match ($targetType) {
+            MessageTarget::TOKEN => $isV8 ? $message->withToken($targetValue) : $message->toToken($targetValue),
+            MessageTarget::TOPIC => $isV8 ? $message->withTopic($targetValue) : $message->toTopic($targetValue),
+            MessageTarget::CONDITION => $isV8 ? $message->withCondition($targetValue) : $message->toCondition($targetValue),
+            default => throw new RuntimeException("Unsupported FCM target type: {$targetType}"),
+        };
     }
 
     /**

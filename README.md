@@ -14,7 +14,7 @@ A Laravel notification channel that sends push notifications through
 - Send data payloads along with the notification
 - Use several Firebase projects in one Laravel app
 - Handle invalid tokens through Laravel's notification events
-- Built on the [Firebase PHP SDK](https://firebase-php.readthedocs.io/) and [kreait/laravel-firebase](https://github.com/kreait/laravel-firebase)
+- Built on the [Firebase PHP SDK](https://firebase-php.readthedocs.io/) and [kreait/laravel-firebase](https://github.com/beste/laravel-firebase)
 
 ## Requirements
 
@@ -37,7 +37,7 @@ composer require ankurk91/fcm-notification-channel
 ## Configuration
 
 The Firebase connection is configured by
-[kreait/laravel-firebase](https://github.com/kreait/laravel-firebase), which is installed as a dependency.
+[kreait/laravel-firebase](https://github.com/beste/laravel-firebase), which is installed as a dependency.
 
 1. Create a [service account](https://firebase.google.com/docs/admin/setup#initialize-sdk) in the Firebase console
    and download its JSON key file.
@@ -104,7 +104,7 @@ class OrderShipped extends Notification implements ShouldQueue
 Do not set a target (token, topic or condition) on the `CloudMessage` in `toFCM()`.
 The channel sets it from the notifiable's routes and replaces anything set there.
 
-See the [Firebase PHP SDK docs](https://firebase-php.readthedocs.io/en/stable/cloud-messaging.html) for everything
+See the [Firebase PHP SDK docs](https://firebase-php.readthedocs.io/stable/cloud-messaging.html) for everything
 `CloudMessage` supports, such as Android, APNs and web push options.
 
 ### 2. Prepare the notifiable model
@@ -329,7 +329,7 @@ class DeleteInvalidFcmTokensAfterMulticast
 ```
 
 Read more about
-[validating registration tokens](https://firebase-php.readthedocs.io/en/stable/cloud-messaging.html#validating-registration-tokens).
+[validating registration tokens](https://firebase-php.readthedocs.io/stable/cloud-messaging.html#validating-registration-tokens).
 
 ### Not reporting invalid recipients
 
@@ -390,7 +390,7 @@ If you discover a security issue, please email `pro.ankurk1[at]gmail[dot]com` in
 
 ## Attribution
 
-The package is based on [this](https://github.com/kreait/laravel-firebase/pull/69) rejected PR.
+The package is based on [this](https://github.com/beste/laravel-firebase/pull/69) rejected PR.
 
 ## License
 

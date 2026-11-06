@@ -17,7 +17,7 @@
 
 ## [2.0.0](https://github.com/ankurk91/fcm-notification-channel/compare/1.5.1..2.0.0)
 
-* Require `kreait/firebase-php@^7.5` due to [Discontinued FCM Messaging API](https://github.com/kreait/firebase-php/issues/804)
+* Require `kreait/firebase-php@^7.5` due to [Discontinued FCM Messaging API](https://github.com/beste/firebase-php/issues/804)
 
 ## [1.5.1](https://github.com/ankurk91/fcm-notification-channel/compare/1.5.0..1.5.1)
 
